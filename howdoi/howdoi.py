@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+利用google搜索指定站点搜索问题的答案，默认站点是stackoverflow
 ######################################################
 #
 # howdoi - instant coding answers via the command line
@@ -18,12 +18,13 @@ import requests_cache
 import sys
 from . import __version__
 
+# Pygments来实现代码高亮
 from pygments import highlight
 from pygments.lexers import guess_lexer, get_lexer_by_name
 from pygments.formatters.terminal import TerminalFormatter
 from pygments.util import ClassNotFound
 
-from pyquery import PyQuery as pq
+from pyquery import PyQuery as pq  # pyquery库是jQuery的Python实现
 from requests.exceptions import ConnectionError
 from requests.exceptions import SSLError
 
@@ -70,7 +71,8 @@ CACHE_FILE = os.path.join(CACHE_DIR, 'cache{0}'.format(
 
 
 def get_proxies():
-    proxies = getproxies()
+    # 从环境变量中获取代理地址 {'http': 'http://192.168.10.1:1280', 'https': 'https://192.168.10.1:1280'}
+    proxies = getproxies()  
     filtered_proxies = {}
     for key, value in proxies.items():
         if key.startswith('http'):
@@ -110,6 +112,9 @@ def get_link_at_pos(links, position):
 
 
 def _format_output(code, args):
+    """生成linux命令行下高亮文本
+    从tags参数或者query中获得所查询问题的的语言，然后调用响应的解释性去渲染，生成对应的高亮文本
+    """
     if not args['color']:
         return code
     lexer = None
